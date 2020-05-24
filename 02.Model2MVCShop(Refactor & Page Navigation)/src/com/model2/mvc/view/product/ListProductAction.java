@@ -17,38 +17,30 @@ public class ListProductAction extends Action {
 	@Override
 	public String execute(HttpServletRequest request,
 								HttpServletResponse response) throws Exception {
-
-		Search searchVO = new Search();
+		Search search=new Search();
 		
 		int currentPage=1;
-
-
-		if(request.getParameter("currentPage") != null){
+		
+		if(request.getParameter("currentPage") !=null) {
 			currentPage=Integer.parseInt(request.getParameter("currentPage"));
 		}
 		
-		searchVO.setCurrentPage(currentPage);
-		searchVO.setSearchCondition(request.getParameter("searchCondition"));
-		searchVO.setSearchKeyword(request.getParameter("searchKeyword"));
+		search.setCurrentPage(currentPage);
+		search.setSearchCondition(request.getParameter("searchCondition"));
+		search.setSearchKeyword(request.getParameter("searchKeyword"));
 		
-		// web.xml  meta-data 로 부터 상수 추출 			
 		int pageSize = Integer.parseInt( getServletContext().getInitParameter("pageSize"));
 		int pageUnit  =  Integer.parseInt(getServletContext().getInitParameter("pageUnit"));
-		searchVO.setPageSize(pageSize);
+		search.setPageSize(pageSize);
 		
-		// Business logic 수행
-		ProductService productService=new ProductServiceImpl();
-		Map<String , Object> map = productService.getProductList(searchVO);
+		ProductService service=new ProductServiceImpl();
+		Map<String,Object> map=service.getProductList(search);
 		
-		Page resultPage	= 						// ↓ 페이지의 객체		
-				new Page( currentPage, ((Integer)map.get("totalCount")).intValue(), pageUnit, pageSize);
-			System.out.println("ListUserAction ::"+resultPage);
-		
-		// Model 과 View 연결
-							//객체이름  , 객체의 벨류값
-			request.setAttribute("list", map.get("list"));
-			request.setAttribute("resultPage", resultPage);
-			request.setAttribute("searchVO", searchVO);
+		Page resultPage=new Page(currentPage, ((Integer)map.get("totalCount")).intValue(), pageUnit, pageSize);
+		System.out.println("ListProductAction resultPage::"+resultPage);
+		request.setAttribute("list", map.get("list"));
+		request.setAttribute("resultPage", resultPage);
+		request.setAttribute("search", search);
 		
 		return "forward:/product/listProduct.jsp";
 	}

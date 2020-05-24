@@ -1,7 +1,7 @@
+<%@page import="com.model2.mvc.service.domain.Product"%>
 <%@ page contentType="text/html; charset=EUC-KR" %>
 
 <%@ page import="com.model2.mvc.service.product.dao.ProductDAO" %>
-<%@ page import="com.model2.mvc.service.domain.Product" %>
 
 <%
  Product productVO = (Product)request.getAttribute("productVO");

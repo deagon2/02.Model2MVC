@@ -14,19 +14,19 @@ public class AddProductAction extends Action {
 	@Override
 	public String execute(	HttpServletRequest request,
 												HttpServletResponse response) throws Exception {
-		Product productVO = new Product();
-		productVO.setProdName(request.getParameter("prodName"));
-		productVO.setProdDetail(request.getParameter("prodDetail"));
-		productVO.setManuDate(request.getParameter("manuDate").replaceAll("-",""));
-		productVO.setPrice(Integer.parseInt(request.getParameter("price")));
-		productVO.setFileName(request.getParameter("fileName"));
+		Product product = new Product();
+		product.setProdName(request.getParameter("prodName"));
+		product.setProdDetail(request.getParameter("prodDetail"));
+		product.setManuDate(request.getParameter("manuDate").replaceAll("-",""));
+		product.setPrice(Integer.parseInt(request.getParameter("price")));
+		product.setFileName(request.getParameter("fileName"));
 		
-		System.out.println(productVO);
+		System.out.println("Product에 저장되어있는값 :: "+product);
 		
 		ProductService service = new ProductServiceImpl();
-		service.addProduct(productVO);
+		service.addProduct(product);
 		
-		request.setAttribute("productVO", productVO);
+		request.setAttribute("productVO", product);
 		
 		return "forward:/product/addProduct.jsp";
 	}

@@ -1,27 +1,25 @@
-<%@ page contentType="text/html; charset=euc-kr" %>
+<%@ page contentType="text/html; charset=EUC-KR" pageEncoding="EUC-KR"%>
 
-<%@ page import="java.util.*"  %>
-
+<%@page import="com.model2.mvc.common.util.CommonUtil"%>
 <%@page import="com.model2.mvc.service.domain.Product"%>
-<%@ page import="com.model2.mvc.common.Search" %>
-<%@ page import="com.model2.mvc.common.Page" %>
-<%@ page import="com.model2.mvc.common.util.CommonUtil"%>
-
-
+<%@page import="com.model2.mvc.service.domain.User"%>
+<%@ page import="java.util.*" %>
+<%@ page import="com.model2.mvc.common.*" %>
 
 <%
-	List<Product> list = (List<Product>)request.getAttribute ("list");
-	
+	List<Product> list= (List<Product>)request.getAttribute("list");
 	Page resultPage=(Page)request.getAttribute("resultPage");
+	User user=(User)session.getAttribute("user");
 	
-	Search search = (Search)request.getAttribute("searchVO");
+	Search search = (Search)request.getAttribute("search");
 	
 	//==> null 을 ""(nullString)으로 변경
 	String searchCondition = CommonUtil.null2str(search.getSearchCondition());
 	String searchKeyword = CommonUtil.null2str(search.getSearchKeyword());
-	System.out.println("123123"+list);
+	
+	String menu = request.getParameter("menu");
 %>
- 
+
 <html>
 <head>
 <title>상품 목록조회</title>
@@ -37,14 +35,12 @@ function fncGetProductList(currentPage) {
 </script>
 </head>
 
-
-
 <body bgcolor="#ffffff" text="#000000">
 
 <div style="width:98%; margin-left:10px;">
 
-<form name="detailForm" action="/listProduct.do" method="post">
-<input type="hidden" name="menu" value="${param.menu}">
+<form name="detailForm" action="/listProduct.do?menu=<%=menu %>" method="post">
+
 <table width="100%" height="37" border="0" cellpadding="0"	cellspacing="0">
 	<tr>
 		<td width="15" height="37">
@@ -53,13 +49,15 @@ function fncGetProductList(currentPage) {
 		<td background="/images/ct_ttl_img02.gif" width="100%" style="padding-left:10px;">
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
 				<tr>
-					<td width="93%" class="ct_ttl01">
-					<%if(request.getParameter("menu").equals("search")) {%>
-							상품 목록조회
-					<%}else if(request.getParameter("menu").equals("manage")) {%>
-							상품 관리
-					<%} %>
+				<%if(menu.equals("manage")){ %>
+					<td width="93%" class="ct_ttl01">					
+					상품 관리					
 					</td>
+				<%}else if(menu.equals("search")){ %>
+					<td width="93%" class="ct_ttl01">					
+					상품 목록조회					
+					</td>
+				<%} %>	
 				</tr>
 			</table>
 		</td>
@@ -70,15 +68,17 @@ function fncGetProductList(currentPage) {
 </table>
 
 
+
 <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
 	<tr>
-	<td align="right">
-		<select name="searchCondition" class="ct_input_g" style="width:80px">
-			<option value="0" <%= (searchCondition.equals("0") ? "selected" : "")%>>상품번호</option>
-			<option value="1" <%= (searchCondition.equals("1") ? "selected" : "")%>>상품명</option>
-			<option value="2" <%= (searchCondition.equals("2") ? "selected" : "")%>>상품가격</option>
-		</select>
-		<input 	type="text" name="searchKeyword" value="<%= searchKeyword %>"  class="ct_input_g" 						style="width:200px; height:20px" >
+		<td align="right">
+			<select name="searchCondition" class="ct_input_g" style="width:80px">
+				<option value="0" <%=(searchCondition.equals("0") ? "selected" : "") %>>상품번호</option>
+				<option value="1" <%=(searchCondition.equals("1") ? "selected" : "") %>>상품명</option>
+				<option value="2" <%=(searchCondition.equals("2") ? "selected" : "") %>>상품가격</option>				
+			</select>
+			<input type="text" name="searchKeyword"  value="<%=searchKeyword %>"
+			class="ct_input_g" style="width:200px; height:19px" />
 		</td>
 		<td align="right" width="70">
 			<table border="0" cellspacing="0" cellpadding="0">
@@ -98,13 +98,9 @@ function fncGetProductList(currentPage) {
 	</tr>
 </table>
 
- 
-
 <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
 	<tr>
-	<!--===================================수정전===========================
-	 전체  total 건수, 현재 currentPage 페이지</td> -->
-	<td colspan="11" >전체  <%= resultPage.getTotalCount()%> 건수, 현재  <%=resultPage.getCurrentPage() %> 페이지</td>
+		<td colspan="11" >전체  <%= resultPage.getTotalCount() %> 건수, 현재 <%= resultPage.getCurrentPage() %> 페이지</td>
 	</tr>
 	<tr>
 		<td class="ct_list_b" width="100">No</td>
@@ -120,43 +116,62 @@ function fncGetProductList(currentPage) {
 	<tr>
 		<td colspan="11" bgcolor="808285" height="1"></td>
 	</tr>
-		
-		<%
+	<% 	
 		for(int i=0; i<list.size(); i++) {
 			Product vo = list.get(i);
-		%> 	
+	%>		
 	<tr class="ct_list_pop">
-		<td align="center">
-		
-		<%= i + 1 %>
-		</td>
+		<td align="center"><%=i+1%></td>
+		<td></td>
+				
+		<td align="left">
+		<%if(menu.equals("manage")){ %>
+			<a href="/updateProductView.do?prodNo=<%=vo.getProdNo() %>&menu=<%=menu%>"><%=vo.getProdName() %></a>
+		<%}else if(menu.equals("search") && vo.getProTranCode()!="0"){ %>
+			<%=vo.getProdName() %>	
+		<%}else{%>
+			<a href="/getProduct.do?prodNo=<%=vo.getProdNo() %>&menu=<%=menu%>"><%=vo.getProdName() %></a>
+		<%} %>
+		</td>	
+		<td></td>
+		<td align="left"><%=vo.getPrice() %></td>
+		<td></td>
+		<td align="left"><%=vo.getRegDate() %></td>
 		<td></td>
 		<td align="left">
-			<%if(request.getParameter("menu").equals("search")) {%>
-				<a href="/getProduct.do?prodNo=<%=vo.getProdNo() %>&menu=search"><%= vo.getProdName() %></a>
-			<%}else if(request.getParameter("menu").equals("manage")) {%>	
-				<a href="/updateProductView.do?prodNo=<%=vo.getProdNo() %>&menu=manage"><%= vo.getProdName() %></a>
-			<%} %>
-		</td>
-		<td></td>
-		<td align="left"><%= vo.getPrice() %></td>
-		<td></td>
-		<td align="left"><%= vo.getRegDate() %></td>
-		<td></td>
-		<td align="left">판매중</td>
+		
+		<%if(vo.getProTranCode().equals("0")){ %>
+		판매중	
+		<%}else if(menu.equals("manage") && vo.getProTranCode().equals("1  ")){%>
+		구매완료 <a href="/updateTranCodeByProd.do?prodNo=<%=vo.getProdNo() %>&tranCode=2">배송하기</a>
+		<%}else if(menu.equals("manage") && vo.getProTranCode().equals("2  ")){%>
+		배송중
+		<%}else if(menu.equals("manage") && vo.getProTranCode().equals("3  ")){%>
+		배송완료		
+		<%}else if(menu.equals("search") && user.getRole().equals("admin") && vo.getProTranCode().equals("1  ")){ %>	
+		구매완료
+		<%}else if(menu.equals("search") && user.getRole().equals("admin") && vo.getProTranCode().equals("2  ")){ %>
+		배송중
+		<%}else if(menu.equals("search") && user.getRole().equals("admin") && vo.getProTranCode().equals("3  ")){ %>
+		배송완료
+		<%}else{%>
+		재고없음
+		<%} %>
+		
+		</td>	
 	</tr>
 	<tr>
 		<td colspan="11" bgcolor="D6D7D6" height="1"></td>
-	</tr>
+	</tr>	
 	<% } %>
+	
 </table>
 
-
-<!-- PageNavigation Start... -->
-<table width="100%" border="0" cellspacing="0" cellpadding="0"	style="margin-top:10px;">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
 	<tr>
 		<td align="center">
-		   <input type="hidden" id="currentPage" name="currentPage" value=""/>
+		<input type="hidden" id="currentPage" name="currentPage" value=""/>
+		
 			<% if( resultPage.getCurrentPage() <= resultPage.getPageUnit() ){ %>
 					◀ 이전
 			<% }else{ %>
@@ -173,14 +188,16 @@ function fncGetProductList(currentPage) {
 					<a href="javascript:fncGetProductList('<%=resultPage.getEndUnitPage()+1%>')">이후 ▶</a>
 			<% } %>
 		
+		
+		
+
     	</td>
 	</tr>
 </table>
-<!-- PageNavigation End... -->
+<!--  페이지 Navigator 끝 -->
 
 </form>
-</div>
 
+</div>
 </body>
 </html>
- 

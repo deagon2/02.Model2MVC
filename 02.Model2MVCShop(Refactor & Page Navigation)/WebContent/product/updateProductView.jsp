@@ -1,18 +1,14 @@
-<%@page import="com.model2.mvc.service.domain.Product"%>
 <%@ page contentType="text/html; charset=EUC-KR"%>
 
-<%@ page import="com.model2.mvc.service.domain.Product" %>
+<%@page import="com.model2.mvc.service.domain.Product"%>
 
 <%
-	Product vo = (Product)request.getAttribute("vo");
-	session.setAttribute("product", vo);
-%>	
-
-
+	Product vo=(Product)request.getAttribute("vo");
+%>
 
 <html>
 <head>
-<title>회원정보수정</title>
+<title>상품정보수정</title>
 
 <link rel="stylesheet" href="/css/admin.css" type="text/css">
 
@@ -20,7 +16,7 @@
 </script>
 
 <script type="text/javascript">
-<!--
+
 function fncAddProduct(){
 	//Form 유효성 검증
  	var name = document.detailForm.prodName.value;
@@ -48,15 +44,16 @@ function fncAddProduct(){
 	document.detailForm.action='/updateProduct.do';
 	document.detailForm.submit();
 }
--->
+
 </script>
 </head>
 
 <body bgcolor="#ffffff" text="#000000">
 
-<form name="detailForm" action="/updateProductView.do?" method="post">
+<form name="detailForm" method="post" >
 
-<input type="hidden" name="prodNo" value="<%=vo.getProdNo()%>" />
+<input type="hidden" name="prodNo" value="<%=vo.getProdNo()%>"/>
+<%System.out.println("jsp prodNO : "+vo.getProdNo()); %>
 
 <table width="100%" height="37" border="0" cellpadding="0" cellspacing="0">
 	<tr>
@@ -106,8 +103,8 @@ function fncAddProduct(){
 		</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
-			<input type="text" name="prodDetail" value="<%=vo.getProdDetail()%>" class="ct_input_g" 
-						style="width: 100px; height: 19px" maxLength="10" minLength="6">
+			<input type="text" name="prodDetail" value="<%=vo.getProdDetail() %>" class="ct_input_g" 
+						style="width: 100px; height: 19px" maxLength="10"	minLength="6">
 		</td>
 	</tr>
 	<tr>
@@ -119,7 +116,7 @@ function fncAddProduct(){
 		</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
-			<input type="text" readonly="readonly" name="manuDate" value="<%=vo.getManuDate()%>" 	
+			<input type="text" readonly="readonly" name="manuDate" value="<%=vo.getManuDate() %>" 	
 						class="ct_input_g" style="width: 100px; height: 19px" maxLength="10" minLength="6">&nbsp;
 						<img 	src="../images/ct_icon_date.gif" width="15" height="15" 
 									onclick="show_calendar('document.detailForm.manuDate', document.detailForm.manuDate.value)" />
@@ -134,7 +131,7 @@ function fncAddProduct(){
 		</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
-			<input type="text" name="price" value="<%=vo.getPrice()%>"
+			<input type="text" name="price" value="<%=vo.getPrice() %>"
 						class="ct_input_g" style="width: 100px; height: 19px" maxLength="50"/>&nbsp;원
 		</td>
 	</tr>

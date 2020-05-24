@@ -4,10 +4,10 @@ package com.model2.mvc.common;
 public class Search {
 	
 	///Field
-	private int curruntPage;     //현재페이지의 값을 받아오는 객체
+	private int curruntPage;    	 //현재페이지의 값을 받아오는 객체
 	private String searchCondition;  //회원ID 인지 회원명인지 확인하는 객체
-	private String searchKeyword;  // 웹에서 텍스트로 입력된 글자를 받는 객체
-	private int pageSize; //페이지의 사이즈를 받아오는 객체
+	private String searchKeyword;  	 // 웹에서 텍스트로 입력된 글자를 받는 객체
+	private int pageSize;			 //페이지의 사이즈를 받아오는 객체
 	
 	///Constructor
 	public Search() {

@@ -17,21 +17,21 @@ public class ProductServiceImpl implements ProductService{
 		productDAO=new ProductDAO();
 	}
 	
-	public void addProduct(Product productVO) throws Exception {
-		productDAO.insertProduct(productVO);
+	public void addProduct(Product product) throws Exception {
+		productDAO.insertProduct(product);
 	}
 	
-	public Map<String, Object> getProductList(Search searchVO) throws Exception {
-		return productDAO.getProductList(searchVO);
+	public Map<String, Object> getProductList(Search search) throws Exception {
+		return productDAO.getProductList(search);
 	}
 	
 	public Product getProduct(int prodNo) throws Exception{
 		return productDAO.findProduct(prodNo);
 	}
 
-	public void updateProduct(Product productVO) throws Exception {
-		System.out.println("MPI  = "+productVO);
-		productDAO.updateProduct(productVO);
+	public void updateProduct(Product product) throws Exception {
+		System.out.println("MPI  = "+product);
+		productDAO.updateProduct(product);
 	}
 	
 }
